@@ -228,6 +228,14 @@ public:
     }
   }
 
+    /// Method to Get Vehicle Trajectory
+  void GetVehileTrajectory(const ActorId& actor_id) {
+    TrafficManagerBase* tm_ptr = GetTM(_port);
+    if(tm_ptr != nullptr){
+      tm_ptr->GetVehileTrajectory(actor_id);
+    }
+  }
+
 private:
 
   void CreateTrafficManagerServer(

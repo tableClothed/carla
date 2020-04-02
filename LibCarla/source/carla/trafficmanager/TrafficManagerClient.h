@@ -185,6 +185,12 @@ public:
     _client->call("set_hybrid_physics_mode", mode_switch);
   }
 
+  /// Method to get Vehicle Trajectory.
+  void GetVehicleTrajectory(const ActorId& actor_id) {
+    DEBUG_ASSERT(_client != nullptr);
+    _client->call("get_vehicle_trajectory", actor_id);
+  }
+
 private:
 
   /// RPC client.

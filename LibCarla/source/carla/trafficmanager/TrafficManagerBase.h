@@ -106,6 +106,9 @@ public:
   /// Method to set hybrid physics mode.
   virtual void SetHybridPhysicsMode(const bool mode_switch) = 0;
 
+  /// Method to get the vehicle Trajectory
+  virtual void GetVehileTrajectory(const ActorId& actor_id) = 0;
+
 protected:
 
 };

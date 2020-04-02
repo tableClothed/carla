@@ -187,6 +187,9 @@ namespace traffic_manager {
 
     /// Method to set hybrid physics mode.
     void SetHybridPhysicsMode(const bool mode_switch);
+
+    /// Method to get Vehicle Trajectory.
+    void GetVehileTrajectory(const ActorId& actor_id);
   };
 
 } // namespace traffic_manager

@@ -995,5 +995,9 @@ namespace LocalizationConstants {
     return enabled;
   }
 
+  Buffer LocalizationStage::GetWayPointBuffer(const ActorId& actor_id) {
+   return buffer_list->at(actor_id);
+  }
+
 } // namespace traffic_manager
 } // namespace carla

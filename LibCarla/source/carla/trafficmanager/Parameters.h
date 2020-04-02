@@ -16,6 +16,7 @@
 
 #include "carla/trafficmanager/AtomicActorSet.h"
 #include "carla/trafficmanager/AtomicMap.h"
+#include "carla/trafficmanager/MessengerAndDataTypes.h"
 
 namespace carla {
 namespace traffic_manager {
@@ -62,6 +63,8 @@ namespace traffic_manager {
     std::atomic<float> distance_margin {2.0};
     /// Hybrid physics mode switch.
     std::atomic<bool> hybrid_physics_mode {false};
+    /// Buffer List
+    BufferList buffer_list;
 
   public:
     Parameters();
@@ -100,6 +103,13 @@ namespace traffic_manager {
 
     /// Method to query lane change command for a vehicle.
     ChangeLaneInfo GetForceLaneChange(const ActorPtr &actor);
+
+    /// Method to query Vehicle Trajectory for a vehicle.
+    Buffer GeVehicleTrajectory(const ActorId& actor_id);
+
+    /// Method to set Buffer List
+
+    void SetBufferList(const BufferList& buffer_list);
 
     /// Method to query percentage probability of keep right rule for a vehicle.
     float GetKeepRightPercentage(const ActorPtr &actor);

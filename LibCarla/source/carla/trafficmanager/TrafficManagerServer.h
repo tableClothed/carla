@@ -155,6 +155,11 @@ public:
         tm->SetHybridPhysicsMode(mode_switch);
       });
 
+      /// Method to get Vehicle Trajectory.
+      server->bind("get_vehicle_trajectory", [=](carla::rpc::ActorId actor_id) {
+        tm->GetVehileTrajectory(actor_id);
+      });
+
       /// Method to set synchronous mode.
       server->bind("set_synchronous_mode", [=](const bool mode) {
         tm->SetSynchronousMode(mode);

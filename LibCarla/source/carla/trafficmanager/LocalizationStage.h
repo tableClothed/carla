@@ -198,6 +198,8 @@ namespace traffic_manager {
 
     /// Method to trigger initiation of pipeline in synchronous mode.
     bool RunStep();
+
+    Buffer GetWayPointBuffer(const ActorId& actor_id);
   };
 
 } // namespace traffic_manager

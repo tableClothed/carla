@@ -31,5 +31,6 @@ void export_trafficmanager() {
       .def("set_global_distance_to_leading_vehicle", &carla::traffic_manager::TrafficManager::SetGlobalDistanceToLeadingVehicle)
       .def("set_percentage_keep_right_rule", &carla::traffic_manager::TrafficManager::SetKeepRightPercentage)
       .def("set_synchronous_mode", &carla::traffic_manager::TrafficManager::SetSynchronousMode)
+      .def("get_vehicle_trajectory", &carla::traffic_manager::TrafficManager::GetVehileTrajectory)
       .def("set_hybrid_physics_mode", &carla::traffic_manager::TrafficManager::SetHybridPhysicsMode);
 }
