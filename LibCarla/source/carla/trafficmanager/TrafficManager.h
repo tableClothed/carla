@@ -229,10 +229,10 @@ public:
   }
 
     /// Method to Get Vehicle Trajectory
-  void GetVehileTrajectory(const ActorId& actor_id) {
+  void GetVehicleTrajectory(const ActorId& actor_id) {
     TrafficManagerBase* tm_ptr = GetTM(_port);
     if(tm_ptr != nullptr){
-      tm_ptr->GetVehileTrajectory(actor_id);
+      tm_ptr->GetVehicleTrajectory(actor_id);
     }
   }
 

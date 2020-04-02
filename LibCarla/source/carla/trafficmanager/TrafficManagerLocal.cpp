@@ -205,8 +205,8 @@ void TrafficManagerLocal::SetHybridPhysicsMode(const bool mode_switch) {
   parameters.SetHybridPhysicsMode(mode_switch);
 }
 
-void TrafficManagerLocal::GetVehileTrajectory(const ActorId& actor_id) {
-   parameters.GeVehicleTrajectory(actor_id);
+void TrafficManagerLocal::GetVehicleTrajectory(const ActorId& actor_id) {
+   parameters.GetVehicleTrajectory(actor_id);
 }
 
 bool TrafficManagerLocal::CheckAllFrozen(TLGroup tl_to_freeze) {

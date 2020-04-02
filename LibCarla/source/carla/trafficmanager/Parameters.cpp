@@ -184,7 +184,7 @@ float Parameters::GetDistanceToLeadingVehicle(const ActorPtr &actor) {
   return specific_distance_margin;
 }
 
-Buffer Parameters::GeVehicleTrajectory(const ActorId& actor_id) {
+Buffer Parameters::GetVehicleTrajectory(const ActorId& actor_id) {
 return buffer_list.at(actor_id);
 }
 

@@ -157,7 +157,7 @@ public:
 
       /// Method to get Vehicle Trajectory.
       server->bind("get_vehicle_trajectory", [=](carla::rpc::ActorId actor_id) {
-        tm->GetVehileTrajectory(actor_id);
+        tm->GetVehicleTrajectory(actor_id);
       });
 
       /// Method to set synchronous mode.

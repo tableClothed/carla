@@ -105,7 +105,7 @@ namespace traffic_manager {
     ChangeLaneInfo GetForceLaneChange(const ActorPtr &actor);
 
     /// Method to query Vehicle Trajectory for a vehicle.
-    Buffer GeVehicleTrajectory(const ActorId& actor_id);
+    Buffer GetVehicleTrajectory(const ActorId& actor_id);
 
     /// Method to set Buffer List
 

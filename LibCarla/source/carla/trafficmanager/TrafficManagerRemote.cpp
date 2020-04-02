@@ -204,7 +204,7 @@ carla::client::detail::EpisodeProxy& TrafficManagerRemote::GetEpisodeProxy() {
   return episodeProxyTM;
 }
 
-void TrafficManagerRemote::GetVehileTrajectory(const ActorId&  actor_id) {
+void TrafficManagerRemote::GetVehicleTrajectory(const ActorId&  actor_id) {
   client.GetVehicleTrajectory(actor_id);
 }
 
