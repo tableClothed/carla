@@ -26,6 +26,7 @@ nav:
 - Advanced steps:
   - 'Recorder': 'adv_recorder.md'
   - 'Rendering options': 'adv_rendering_options.md'
+  - 'RSS sensor': 'adv_rss.md'
   - 'Synchrony and time-step': 'adv_synchrony_timestep.md'
   - 'Traffic Manager': 'adv_traffic_manager.md'
 - References:
@@ -43,6 +44,7 @@ nav:
   - 'Add friction triggers': "tuto_G_add_friction_triggers.md"
   - 'Control vehicle physics': "tuto_G_control_vehicle_physics.md"
   - 'Control walker skeletons': "tuto_G_control_walker_skeletons.md"
+  - 'Retrieve simulation data': "tuto_G_retrieve_data.md"
 - Tutorials (assets):
   - 'Import new assets': 'tuto_A_import_assets.md'
   - 'Create and import a map': 'tuto_A_map_creation.md'

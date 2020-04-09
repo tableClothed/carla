@@ -108,6 +108,8 @@ public:
 
   /// Method to get the vehicle Trajectory
   virtual void GetVehicleTrajectory(const ActorId& actor_id) = 0;
+  /// Method to set hybrid physics radius.
+  virtual void SetHybridPhysicsRadius(const float radius) = 0;
 
 protected:
 

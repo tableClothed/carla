@@ -33,5 +33,6 @@ void export_trafficmanager() {
       .def("set_synchronous_mode", &carla::traffic_manager::TrafficManager::SetSynchronousMode)
       //.def("get_vehicle_trajectory", CALL_RETURNING_LIST(carla::traffic_manager ,TrafficManager::GetVehicleTrajectory)
       .def("get_vehicle_trajectory", &carla::traffic_manager::TrafficManager::GetVehicleTrajectory)
-      .def("set_hybrid_physics_mode", &carla::traffic_manager::TrafficManager::SetHybridPhysicsMode);
+      .def("set_hybrid_physics_mode", &carla::traffic_manager::TrafficManager::SetHybridPhysicsMode)
+      .def("set_hybrid_physics_radius", &carla::traffic_manager::TrafficManager::SetHybridPhysicsRadius);
 }

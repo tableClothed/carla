@@ -106,6 +106,9 @@ public:
   /// Method to get Vehicle Trajectory.
   void GetVehicleTrajectory(const ActorId& actor_id);
 
+  /// Method to set hybrid physics radius.Oh ye
+  void SetHybridPhysicsRadius(const float radius);
+
   /// Method to provide synchronous tick
   bool SynchronousTick();
 

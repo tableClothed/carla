@@ -59,12 +59,14 @@ namespace traffic_manager {
     AtomicMap<ActorId, float> perc_keep_right;
     /// Synchronous mode switch.
     std::atomic<bool> synchronous_mode {false};
-    /// Distance Margin
+    /// Distance margin
     std::atomic<float> distance_margin {2.0};
     /// Hybrid physics mode switch.
     std::atomic<bool> hybrid_physics_mode {false};
     /// Buffer List
     BufferList buffer_list;
+    /// Hybrid physics radius.
+    std::atomic<float> hybrid_physics_radius {70.0};
 
   public:
     Parameters();
@@ -167,6 +169,12 @@ namespace traffic_manager {
 
     /// Method to retrieve hybrid physics mode.
     bool GetHybridPhysicsMode();
+
+    /// Method to set hybrid physics radius.
+    void SetHybridPhysicsRadius(const float radius);
+
+    /// Method to retrieve hybrid physics radius.
+    float GetHybridPhysicsRadius();
 
     /// Synchronous mode time out variable.
     std::chrono::duration<double, std::milli> synchronous_time_out;

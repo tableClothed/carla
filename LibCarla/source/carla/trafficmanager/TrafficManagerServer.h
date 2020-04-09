@@ -160,6 +160,11 @@ public:
         tm->GetVehicleTrajectory(actor_id);
       });
 
+      /// Method to set hybrid physics radius.
+      server->bind("set_hybrid_physics_radius", [=](const float radius) {
+        tm->SetHybridPhysicsRadius(radius);
+      });
+
       /// Method to set synchronous mode.
       server->bind("set_synchronous_mode", [=](const bool mode) {
         tm->SetSynchronousMode(mode);

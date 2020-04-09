@@ -190,6 +190,10 @@ namespace traffic_manager {
 
     /// Method to get Vehicle Trajectory.
     void GetVehicleTrajectory(const ActorId& actor_id);
+
+    /// Method to set hybrid physics radius.
+    void SetHybridPhysicsRadius(const float radius);
+
   };
 
 } // namespace traffic_manager
