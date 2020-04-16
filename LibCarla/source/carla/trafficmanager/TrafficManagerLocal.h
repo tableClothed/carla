@@ -28,6 +28,8 @@ namespace traffic_manager {
 
   using ActorPtr = carla::SharedPtr<carla::client::Actor>;
   using TLGroup = std::vector<carla::SharedPtr<carla::client::TrafficLight>>;
+  using WeakEpisodeProxy = carla::client::detail::WeakEpisodeProxy;
+  using EpisodeProxy = carla::client::detail::EpisodeProxy;
 
   /// The function of this class is to integrate all the various stages of
   /// the traffic manager appropriately using messengers.
@@ -48,7 +50,7 @@ namespace traffic_manager {
     std::shared_ptr<InMemoryMap> local_map;
 
     /// Carla's client connection object.
-    carla::client::detail::EpisodeProxy episodeProxyTM;
+    WeakEpisodeProxy episodeProxyTM;
 
     /// Carla's debug helper object.
     carla::client::DebugHelper debug_helper;
@@ -86,7 +88,7 @@ namespace traffic_manager {
       std::vector<float> lateral_PID_parameters,
       std::vector<float> lateral_highway_PID_parameters,
       float perc_decrease_from_limit,
-      carla::client::detail::EpisodeProxy &episodeProxy,
+      WeakEpisodeProxy episodeProxy,
       uint16_t &RPCportTM);
 
     /// Destructor.
@@ -157,7 +159,7 @@ namespace traffic_manager {
     void ResetAllTrafficLights();
 
     /// Get CARLA episode information.
-    carla::client::detail::EpisodeProxy& GetEpisodeProxy();
+    WeakEpisodeProxy GetEpisodeProxy();
 
     /// Get list of all registered vehicles.
     std::vector<ActorId> GetRegisteredVehiclesIDs();

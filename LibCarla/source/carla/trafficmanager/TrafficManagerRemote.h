@@ -23,6 +23,8 @@ namespace traffic_manager {
 using ActorPtr = carla::SharedPtr<carla::client::Actor>;
 using TLS = carla::rpc::TrafficLightState;
 using TLGroup = std::vector<carla::SharedPtr<carla::client::TrafficLight>>;
+using WeakEpisodeProxy = carla::client::detail::WeakEpisodeProxy;
+using EpisodeProxy = carla::client::detail::EpisodeProxy;
 
 /// The function of this class is to integrate all the various stages of
 /// the traffic manager appropriately using messengers.
@@ -43,7 +45,7 @@ public:
   void Reset();
 
   /// Constructor store remote location information.
-  TrafficManagerRemote(const std::pair<std::string, uint16_t> &_serverTM, carla::client::detail::EpisodeProxy &episodeProxy);
+  TrafficManagerRemote(const std::pair<std::string, uint16_t> &_serverTM, WeakEpisodeProxy episodeProxy);
 
   /// Destructor.
   virtual ~TrafficManagerRemote();
@@ -113,7 +115,7 @@ public:
   void ResetAllTrafficLights();
 
   /// Get CARLA episode information.
-  carla::client::detail::EpisodeProxy& GetEpisodeProxy();
+  WeakEpisodeProxy GetEpisodeProxy();
 
   /// Method to check server is alive or not.
   void HealthCheckRemoteTM();
@@ -125,7 +127,7 @@ private:
   TrafficManagerClient client;
 
   /// CARLA client connection object.
-  carla::client::detail::EpisodeProxy episodeProxyTM;
+  WeakEpisodeProxy episodeProxyTM;
 
   std::condition_variable _cv;
 

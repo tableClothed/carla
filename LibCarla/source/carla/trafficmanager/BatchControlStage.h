@@ -27,6 +27,8 @@ namespace traffic_manager {
 
 using namespace std::literals::chrono_literals;
 
+using WeakEpisodeProxy = carla::client::detail::WeakEpisodeProxy;
+
 /// This class receives actuation signals (throttle, brake, steer)
 /// from Motion Planner Stage class and communicates these signals to
 /// the simulator in batches to control vehicles' movement.
@@ -39,7 +41,7 @@ private:
   /// Pointer to a messenger from Motion Planner.
   std::shared_ptr<PlannerToControlMessenger> messenger;
   /// Reference to CARLA client connection object.
-  carla::client::detail::EpisodeProxy episode_proxy_bcs;
+  WeakEpisodeProxy episode_proxy_bcs;
   /// Array to hold command batch.
   std::shared_ptr<std::vector<carla::rpc::Command>> commands;
   /// Number of vehicles registered with the traffic manager.
@@ -58,7 +60,7 @@ public:
 
   BatchControlStage(std::string stage_name,
                     std::shared_ptr<PlannerToControlMessenger> messenger,
-                    carla::client::detail::EpisodeProxy &episode_proxy,
+                    WeakEpisodeProxy episode_proxy,
                     Parameters &parameters);
 
   ~BatchControlStage();

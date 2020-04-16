@@ -44,7 +44,7 @@ namespace LocalizationConstants {
       InMemoryMap &local_map,
       Parameters &parameters,
       carla::client::DebugHelper &debug_helper,
-      carla::client::detail::EpisodeProxy &episodeProxy)
+      WeakEpisodeProxy episodeProxy)
     : PipelineStage(stage_name),
       planner_messenger(planner_messenger),
       collision_messenger(collision_messenger),

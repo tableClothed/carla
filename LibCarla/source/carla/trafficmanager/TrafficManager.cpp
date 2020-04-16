@@ -23,15 +23,15 @@ std::map<uint16_t, std::unique_ptr<TrafficManagerBase>> TrafficManager::_tm_map;
 std::mutex TrafficManager::_mutex;
 
 TrafficManager::TrafficManager(
-    carla::client::detail::EpisodeProxy episode_proxy,
+    EpisodeProxy episode_proxy,
     uint16_t port)
   : _port(port) {
 
   if(!GetTM(_port)){
     // Check if a TM server already exists and connect to it
-    if(!CreateTrafficManagerClient(episode_proxy, port)) {
+    if(!CreateTrafficManagerClient(WeakEpisodeProxy{episode_proxy.Lock()->shared_from_this()}, port)) {
       // As TM server not running, create one
-      CreateTrafficManagerServer(episode_proxy, port);
+      CreateTrafficManagerServer(WeakEpisodeProxy{episode_proxy.Lock()->shared_from_this()}, port);
     }
   }
 }
@@ -61,7 +61,7 @@ void TrafficManager::Tick() {
 }
 
 void TrafficManager::CreateTrafficManagerServer(
-    carla::client::detail::EpisodeProxy episode_proxy,
+    WeakEpisodeProxy episode_proxy,
     uint16_t port) {
 
   // Get local IP details.
@@ -155,7 +155,7 @@ void TrafficManager::CreateTrafficManagerServer(
 }
 
 bool TrafficManager::CreateTrafficManagerClient(
-    carla::client::detail::EpisodeProxy episode_proxy,
+    WeakEpisodeProxy episode_proxy,
     uint16_t port) {
 
   bool result = false;

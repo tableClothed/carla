@@ -52,6 +52,7 @@ namespace traffic_manager {
   using ActorId = carla::ActorId;
   using ActorIdSet = std::unordered_set<ActorId>;
   using TLS = carla::rpc::TrafficLightState;
+  using WeakEpisodeProxy = carla::client::detail::WeakEpisodeProxy;
 
   /// Structure to hold kinematic state of actors.
   struct KinematicState {
@@ -101,7 +102,7 @@ namespace traffic_manager {
     /// Reference to Carla's debug helper object.
     cc::DebugHelper &debug_helper;
     /// Reference to carla client connection object.
-    carla::client::detail::EpisodeProxy episode_proxy_ls;
+    WeakEpisodeProxy episode_proxy_ls;
     /// Structures to hold waypoint buffers for all vehicles.
     /// These are shared with the collisions stage.
     std::shared_ptr<BufferList> buffer_list;
@@ -188,7 +189,7 @@ namespace traffic_manager {
       InMemoryMap &local_map,
       Parameters &parameters,
       carla::client::DebugHelper &debug_helper,
-      carla::client::detail::EpisodeProxy &episodeProxy);
+      WeakEpisodeProxy episodeProxy);
 
     ~LocalizationStage();
 

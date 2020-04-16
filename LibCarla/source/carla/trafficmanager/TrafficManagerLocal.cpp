@@ -15,7 +15,7 @@ TrafficManagerLocal::TrafficManagerLocal(
     std::vector<float> lateral_PID_parameters,
     std::vector<float> lateral_highway_PID_parameters,
     float perc_difference_from_limit,
-    carla::client::detail::EpisodeProxy& episodeProxy,
+    WeakEpisodeProxy episodeProxy,
     uint16_t& RPCportTM)
   : longitudinal_PID_parameters(longitudinal_PID_parameters),
     longitudinal_highway_PID_parameters(longitudinal_highway_PID_parameters),
@@ -135,8 +135,8 @@ void TrafficManagerLocal::Reset() {
 
   Release();
 
-  carla::client::detail::EpisodeProxy episode_proxy = episodeProxyTM.Lock()->GetCurrentEpisode();
-  episodeProxyTM = episode_proxy;
+  EpisodeProxy episode_proxy = episodeProxyTM.Lock()->GetCurrentEpisode();
+  episodeProxyTM = WeakEpisodeProxy{episode_proxy.Lock()->shared_from_this()};
 
   Start();
 }
@@ -278,7 +278,7 @@ bool TrafficManagerLocal::SynchronousTick() {
   return true;
 }
 
-carla::client::detail::EpisodeProxy& TrafficManagerLocal::GetEpisodeProxy() {
+WeakEpisodeProxy TrafficManagerLocal::GetEpisodeProxy() {
   return episodeProxyTM;
 }
 

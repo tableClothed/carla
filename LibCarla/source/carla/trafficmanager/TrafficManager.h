@@ -17,6 +17,8 @@ namespace carla {
 namespace traffic_manager {
 
 using ActorPtr = carla::SharedPtr<carla::client::Actor>;
+using WeakEpisodeProxy = carla::client::detail::WeakEpisodeProxy;
+using EpisodeProxy = carla::client::detail::EpisodeProxy;
 
 /// This class integrates all the various stages of
 /// the traffic manager appropriately using messengers.
@@ -25,7 +27,7 @@ class TrafficManager {
 public:
   /// Public constructor for singleton life cycle management.
   explicit TrafficManager(
-    carla::client::detail::EpisodeProxy episode_proxy,
+    EpisodeProxy episode_proxy,
     uint16_t port = TM_DEFAULT_PORT);
 
   TrafficManager(const TrafficManager& other) {
@@ -222,12 +224,12 @@ public:
 private:
 
   void CreateTrafficManagerServer(
-    carla::client::detail::EpisodeProxy episode_proxy,
+    WeakEpisodeProxy episode_proxy,
     uint16_t port);
 
 
   bool CreateTrafficManagerClient(
-    carla::client::detail::EpisodeProxy episode_proxy,
+    WeakEpisodeProxy episode_proxy,
     uint16_t port);
 
   TrafficManagerBase* GetTM(uint16_t port) const {

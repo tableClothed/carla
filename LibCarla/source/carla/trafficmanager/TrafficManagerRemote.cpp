@@ -16,7 +16,7 @@ namespace traffic_manager {
 
 TrafficManagerRemote::TrafficManagerRemote(
     const std::pair<std::string, uint16_t> &_serverTM,
-    carla::client::detail::EpisodeProxy &episodeProxy)
+    WeakEpisodeProxy episodeProxy)
   : client(_serverTM.first, _serverTM.second),
     episodeProxyTM(episodeProxy) {
 
@@ -84,8 +84,8 @@ void TrafficManagerRemote::Release() {
 void TrafficManagerRemote::Reset() {
   Stop();
 
-  carla::client::detail::EpisodeProxy episode_proxy = episodeProxyTM.Lock()->GetCurrentEpisode();
-  episodeProxyTM = episode_proxy;
+  EpisodeProxy episode_proxy = episodeProxyTM.Lock()->GetCurrentEpisode();
+  episodeProxyTM = WeakEpisodeProxy{episode_proxy.Lock()->shared_from_this()};
 
   Start();
 }
@@ -204,7 +204,7 @@ void TrafficManagerRemote::HealthCheckRemoteTM() {
   client.HealthCheckRemoteTM();
 }
 
-carla::client::detail::EpisodeProxy& TrafficManagerRemote::GetEpisodeProxy() {
+WeakEpisodeProxy TrafficManagerRemote::GetEpisodeProxy() {
   return episodeProxyTM;
 }
 

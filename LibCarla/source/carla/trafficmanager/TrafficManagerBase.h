@@ -16,6 +16,7 @@ namespace carla {
 namespace traffic_manager {
 
 using ActorPtr = carla::SharedPtr<carla::client::Actor>;
+using WeakEpisodeProxy = carla::client::detail::WeakEpisodeProxy;
 
 /// The function of this class is to integrate all the various stages of
 /// the traffic manager appropriately using messengers.
@@ -93,7 +94,7 @@ public:
   virtual void ResetAllTrafficLights() = 0;
 
   /// Get carla episode information
-  virtual  carla::client::detail::EpisodeProxy& GetEpisodeProxy() = 0;
+  virtual WeakEpisodeProxy GetEpisodeProxy() = 0;
 
   /// Method to set Global Distance to Leading Vehicle.
   virtual void SetGlobalDistanceToLeadingVehicle(const float dist) = 0;

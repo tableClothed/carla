@@ -12,7 +12,7 @@ namespace traffic_manager {
 BatchControlStage::BatchControlStage(
       std::string stage_name,
       std::shared_ptr<PlannerToControlMessenger> messenger,
-      carla::client::detail::EpisodeProxy &episode_proxy,
+      WeakEpisodeProxy episode_proxy,
       Parameters &parameters)
     : PipelineStage(stage_name),
       messenger(messenger),
