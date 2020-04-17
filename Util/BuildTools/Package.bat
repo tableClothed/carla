@@ -31,6 +31,10 @@ set PACKAGES=Carla
 if not "%1"=="" (
     if "%1"=="--clean" (
         set DO_CLEAN=true
+        set DO_TARBALL=false
+        set DO_PACKAGE=false
+        set DO_COPY_FILES=false
+
     )
 
     if "%1"=="--no-zip" (
@@ -200,123 +204,125 @@ set CARLAUE4_ROOT_FOLDER=%ROOT_PATH%Unreal/CarlaUE4
 set PACKAGE_PATH_FILE=%CARLAUE4_ROOT_FOLDER%/Content/PackagePath.txt
 set MAP_LIST_FILE=%CARLAUE4_ROOT_FOLDER%/Content/MapPaths.txt
 
-rem through all maps to cook (parameter)
-for %%i in (%PACKAGES%) do (
+if %DO_PACKAGE%==true (
+    rem through all maps to cook (parameter)
+    for %%i in (%PACKAGES%) do (
 
-  set PACKAGE_NAME=%%i
+    set PACKAGE_NAME=%%i
 
-  if not !PACKAGE_NAME! == Carla (
-    echo Preparing environment for cooking '!PACKAGE_NAME!'.
+    if not !PACKAGE_NAME! == Carla (
+        echo Preparing environment for cooking '!PACKAGE_NAME!'.
 
-    set BUILD_FOLDER=%INSTALLATION_DIR%UE4Carla/!PACKAGE_NAME!_%CARLA_VERSION%\
-    set PACKAGE_PATH=%CARLAUE4_ROOT_FOLDER%/Content/!PACKAGE_NAME!
+        set BUILD_FOLDER=%INSTALLATION_DIR%UE4Carla/!PACKAGE_NAME!_%CARLA_VERSION%\
+        set PACKAGE_PATH=%CARLAUE4_ROOT_FOLDER%/Content/!PACKAGE_NAME!
 
-    if not exist "!BUILD_FOLDER!" mkdir "!BUILD_FOLDER!"
+        if not exist "!BUILD_FOLDER!" mkdir "!BUILD_FOLDER!"
 
-    echo Cooking package '!PACKAGE_NAME!'...
+        echo Cooking package '!PACKAGE_NAME!'...
 
-    pushd "%CARLAUE4_ROOT_FOLDER%"
+        pushd "%CARLAUE4_ROOT_FOLDER%"
 
-    REM # Prepare cooking of package
-    call "%UE4_ROOT%/Engine/Binaries/Win64/UE4Editor.exe "^
-      "%CARLAUE4_ROOT_FOLDER%/CarlaUE4.uproject"^
-      -run=PrepareAssetsForCooking^
-      -PackageName=!PACKAGE_NAME!^
-      -OnlyPrepareMaps=false
+        REM # Prepare cooking of package
+        call "%UE4_ROOT%/Engine/Binaries/Win64/UE4Editor.exe "^
+        "%CARLAUE4_ROOT_FOLDER%/CarlaUE4.uproject"^
+        -run=PrepareAssetsForCooking^
+        -PackageName=!PACKAGE_NAME!^
+        -OnlyPrepareMaps=false
 
-    set /p PACKAGE_FILE=<%PACKAGE_PATH_FILE%
-    set /p MAPS_TO_COOK=<%MAP_LIST_FILE%
+        set /p PACKAGE_FILE=<%PACKAGE_PATH_FILE%
+        set /p MAPS_TO_COOK=<%MAP_LIST_FILE%
 
-    REM # Cook maps
-    call "%UE4_ROOT%/Engine/Binaries/Win64/UE4Editor.exe "^
-      "%CARLAUE4_ROOT_FOLDER%/CarlaUE4.uproject"^
-      -run=cook^
-      -map="!MAPS_TO_COOK!"^
-      -cooksinglepackage^
-      -targetplatform="WindowsNoEditor"^
-      -OutputDir="!BUILD_FOLDER!"
+        REM # Cook maps
+        call "%UE4_ROOT%/Engine/Binaries/Win64/UE4Editor.exe "^
+        "%CARLAUE4_ROOT_FOLDER%/CarlaUE4.uproject"^
+        -run=cook^
+        -map="!MAPS_TO_COOK!"^
+        -cooksinglepackage^
+        -targetplatform="WindowsNoEditor"^
+        -OutputDir="!BUILD_FOLDER!"
 
-    REM remove the props folder if exist
-    set PROPS_MAP_FOLDER="%PACKAGE_PATH%/Maps/PropsMap"
-    if exist "%PROPS_MAP_FOLDER%" (
-      rmdir /S /Q "%PROPS_MAP_FOLDER%"
+        REM remove the props folder if exist
+        set PROPS_MAP_FOLDER="%PACKAGE_PATH%/Maps/PropsMap"
+        if exist "%PROPS_MAP_FOLDER%" (
+        rmdir /S /Q "%PROPS_MAP_FOLDER%"
+        )
+
+        popd
+
+        echo Copying files to '!PACKAGE_NAME!'...
+
+        pushd "!BUILD_FOLDER!"
+
+        set SUBST_PATH=!BUILD_FOLDER!CarlaUE4
+
+        REM Copy the package config file to package
+        set TARGET="!SUBST_PATH!\Content\Carla\Config\"
+        mkdir !TARGET:/=\!
+        copy "!PACKAGE_FILE:/=\!" !TARGET:/=\!
+
+        REM Copy some files for each map to the package
+        REM MAPS_TO_COOK is read into an array as tokens separated by '+', we replace the '+' by a new line
+        REM We need the blank line after this line, don't remove it
+        set MAPS_TO_COOK=!MAPS_TO_COOK:+=^
+
+        !
+        set BASE_CONTENT=%INSTALLATION_DIR:/=\%..\Unreal\CarlaUE4\Content
+        for /f "tokens=1 delims=+" %%a in ("!MAPS_TO_COOK!") do (
+
+            REM Get path and name of map
+            for /f %%i in ("%%a") do (
+                set MAP_FOLDER=%%~pi
+                set MAP_NAME=%%~ni
+                REM Remove the '/Game' string
+                set MAP_FOLDER=!MAP_FOLDER:~5!
+            )
+
+            REM # copy the OpenDrive file
+            set SRC=!BASE_CONTENT!!MAP_FOLDER!\OpenDrive\!MAP_NAME!.xodr
+            set TRG=!BUILD_FOLDER!\CarlaUE4\Content\!MAP_FOLDER!\OpenDrive\
+            if exist "!SRC!" (
+                mkdir "!TRG!"
+                copy "!SRC!" "!TRG!"
+            )
+
+            REM # copy the navigation file
+            set SRC=!BASE_CONTENT!!MAP_FOLDER!\Nav\!MAP_NAME!.bin
+            set TRG=!BUILD_FOLDER!\CarlaUE4\Content\!MAP_FOLDER!\Nav\
+            if exist "!SRC!" (
+                mkdir "!TRG!"
+                copy "!SRC!" "!TRG!"
+            )
+        )
+
+        rmdir /S /Q "!BUILD_FOLDER!\CarlaUE4\Metadata"
+        rmdir /S /Q "!BUILD_FOLDER!\CarlaUE4\Plugins"
+        REM del "!BUILD_FOLDER!\CarlaUE4\Content\!PACKAGE_NAME!/Maps/!PROPS_MAP_NAME!"
+        del "!BUILD_FOLDER!\CarlaUE4\AssetRegistry.bin"
+    
+        if %DO_TARBALL%==true (
+
+            echo Packaging '!PACKAGE_NAME!'...
+
+            set DESTINATION_ZIP=%INSTALLATION_DIR%UE4Carla/!PACKAGE_NAME!_%CARLA_VERSION%.zip
+            set SOURCE=!BUILD_FOLDER:/=\!\
+            set DST_ZIP=!DESTINATION_ZIP:/=\!
+
+            pushd "!SOURCE!"
+
+            if exist "%ProgramW6432%/7-Zip/7z.exe" (
+                "%ProgramW6432%/7-Zip/7z.exe" a "!DST_ZIP!" . -tzip -mmt -mx5
+            ) else (
+                rem https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.archive/compress-archive?view=powershell-6
+                powershell -command "& { Compress-Archive -Path * -CompressionLevel Fastest -DestinationPath '!DST_ZIP!' }"
+            )
+
+            popd
+
+            if errorlevel 1 goto bad_exit
+            echo ZIP created at !DST_ZIP!
+        )
+        popd
     )
-
-    popd
-
-    echo Copying files to '!PACKAGE_NAME!'...
-
-    pushd "!BUILD_FOLDER!"
-
-    set SUBST_PATH=!BUILD_FOLDER!CarlaUE4
-
-    REM Copy the package config file to package
-    set TARGET="!SUBST_PATH!\Content\Carla\Config\"
-    mkdir !TARGET:/=\!
-    copy "!PACKAGE_FILE:/=\!" !TARGET:/=\!
-
-    REM Copy some files for each map to the package
-    REM MAPS_TO_COOK is read into an array as tokens separated by '+', we replace the '+' by a new line
-    REM We need the blank line after this line, don't remove it
-    set MAPS_TO_COOK=!MAPS_TO_COOK:+=^
-
-    !
-    set BASE_CONTENT=%INSTALLATION_DIR:/=\%..\Unreal\CarlaUE4\Content
-    for /f "tokens=1 delims=+" %%a in ("!MAPS_TO_COOK!") do (
-
-      REM Get path and name of map
-      for /f %%i in ("%%a") do (
-        set MAP_FOLDER=%%~pi
-        set MAP_NAME=%%~ni
-        REM Remove the '/Game' string
-        set MAP_FOLDER=!MAP_FOLDER:~5!
-      )
-
-      REM # copy the OpenDrive file
-      set SRC=!BASE_CONTENT!!MAP_FOLDER!\OpenDrive\!MAP_NAME!.xodr
-      set TRG=!BUILD_FOLDER!\CarlaUE4\Content\!MAP_FOLDER!\OpenDrive\
-      if exist "!SRC!" (
-        mkdir "!TRG!"
-        copy "!SRC!" "!TRG!"
-      )
-
-      REM # copy the navigation file
-      set SRC=!BASE_CONTENT!!MAP_FOLDER!\Nav\!MAP_NAME!.bin
-      set TRG=!BUILD_FOLDER!\CarlaUE4\Content\!MAP_FOLDER!\Nav\
-      if exist "!SRC!" (
-        mkdir "!TRG!"
-        copy "!SRC!" "!TRG!"
-      )
-    )
-
-    rmdir /S /Q "!BUILD_FOLDER!\CarlaUE4\Metadata"
-    rmdir /S /Q "!BUILD_FOLDER!\CarlaUE4\Plugins"
-    REM del "!BUILD_FOLDER!\CarlaUE4\Content\!PACKAGE_NAME!/Maps/!PROPS_MAP_NAME!"
-    del "!BUILD_FOLDER!\CarlaUE4\AssetRegistry.bin"
-
-    if %DO_TARBALL%==true (
-
-      echo Packaging '!PACKAGE_NAME!'...
-
-      set DESTINATION_ZIP=%INSTALLATION_DIR%UE4Carla/!PACKAGE_NAME!_%CARLA_VERSION%.zip
-      set SOURCE=!BUILD_FOLDER:/=\!\
-      set DST_ZIP=!DESTINATION_ZIP:/=\!
-
-      pushd "!SOURCE!"
-
-      if exist "%ProgramW6432%/7-Zip/7z.exe" (
-          "%ProgramW6432%/7-Zip/7z.exe" a "!DST_ZIP!" . -tzip -mmt -mx5
-      ) else (
-          rem https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.archive/compress-archive?view=powershell-6
-          powershell -command "& { Compress-Archive -Path * -CompressionLevel Fastest -DestinationPath '!DST_ZIP!' }"
-      )
-
-      popd
-
-      if errorlevel 1 goto bad_exit
-      echo ZIP created at !DST_ZIP!
-    )
-    popd
 
     if %DO_CLEAN%==true (
         echo %FILE_N% Removing intermediate build.
